@@ -1,27 +1,28 @@
 import 'package:flutter/material.dart';
-import 'package:project_android/modules/auth/authProvider.dart';
-import 'package:project_android/themes/theme_colors.dart';
+import 'package:go_find_me/locator.dart';
+import 'package:go_find_me/modules/auth/authProvider.dart';
+import 'package:go_find_me/services/sharedPref.dart';
+import 'package:go_find_me/themes/theme_colors.dart';
 import 'package:provider/provider.dart';
 
 class SplashScreen extends StatefulWidget {
-  const SplashScreen({Key? key}) : super(key: key);
+  const SplashScreen({Key? key, required this.firstTime}) : super(key: key);
+  final bool firstTime;
 
   @override
   _SplashScreenState createState() => _SplashScreenState();
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  // AuthenticationBloc _authenticationBloc = sl<AuthenticationBloc>();
-
   @override
   initState() {
     super.initState();
-    Provider.of<AuthenticationProvider>(context, listen: false)
-        .getStoredUser(context);
-    Future.delayed(Duration(milliseconds: 1500), () {});
+
+    Future.delayed(Duration(milliseconds: 1500), () {
+      Provider.of<AuthenticationProvider>(context, listen: false)
+          .getStoredUser(context, firstTime: widget.firstTime);
+    });
   }
-
-
 
   @override
   void dispose() {
@@ -59,17 +60,6 @@ class _SplashScreenState extends State<SplashScreen> {
                   ),
                 ),
               ),
-              // authProv.lastEvent?.state == AuthEventState.loading
-              //     ? Center(
-              //         child: CircularProgressIndicator(
-              //           color: ThemeColors.white,
-              //         ),
-              //       )
-              //     : ThemeButton.ButtonPrim(
-              //         text: "Retry",
-              //         onpressed: () {
-              //           authProv.tokenAuthentication(context);
-              //         }),
               SizedBox(
                 height: 40,
               )

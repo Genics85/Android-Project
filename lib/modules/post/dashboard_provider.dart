@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:project_android/components/dialogs.dart';
-import 'package:project_android/core/network/networkError.dart';
-import 'package:project_android/locator.dart';
-import 'package:project_android/models/PostModel.dart';
-import 'package:project_android/models/PostQueryResponse.dart';
-import 'package:project_android/modules/base_provider.dart';
-import 'package:project_android/services/api.dart';
+import 'package:go_find_me/components/dialogs.dart';
+import 'package:go_find_me/core/network/networkError.dart';
+import 'package:go_find_me/locator.dart';
+import 'package:go_find_me/models/PostModel.dart';
+import 'package:go_find_me/models/PostQueryResponse.dart';
+import 'package:go_find_me/modules/base_provider.dart';
+import 'package:go_find_me/services/api.dart';
 
 enum DashBoardEventState { idel, isloading, error, success }
 

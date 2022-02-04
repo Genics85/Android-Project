@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:project_android/components/buttons.dart';
-import 'package:project_android/components/text_fields.dart';
-import 'package:project_android/modules/auth/forgotPassword/forgot_password_provider.dart';
-import 'package:project_android/modules/auth/validators.dart';
-import 'package:project_android/themes/padding.dart';
-import 'package:project_android/themes/textStyle.dart';
-import 'package:project_android/themes/theme_colors.dart';
-import 'package:project_android/ui/forgotten_password_code_confirmation.dart';
+import 'package:go_find_me/components/buttons.dart';
+import 'package:go_find_me/components/text_fields.dart';
+import 'package:go_find_me/modules/auth/forgotPassword/forgot_password_provider.dart';
+import 'package:go_find_me/modules/auth/validators.dart';
+import 'package:go_find_me/themes/padding.dart';
+import 'package:go_find_me/themes/textStyle.dart';
+import 'package:go_find_me/themes/theme_colors.dart';
+import 'package:go_find_me/ui/forgotten_password_code_confirmation.dart';
 import 'package:provider/provider.dart';
 
 class ForgotPasswordIdentitypage extends StatefulWidget {
@@ -24,26 +24,28 @@ class _ForgotPasswordIdentitypageState extends State<ForgotPasswordIdentitypage>
   @override
   void initState() {
     super.initState();
-    _forgotPasswordProvider.stream.listen((event) {
-      switch (event.state) {
-        case ForgotPasswordEventState.error:
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: Text(
-              event.data,
-              style: ThemeTexTStyle.regular(color: ThemeColors.white),
-            ),
-            backgroundColor: ThemeColors.accent,
-          ));
-          break;
-        case ForgotPasswordEventState.success:
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (_) => ForgottenPasswordCodeConfirmation()));
-          break;
-        default:
-          return;
-      }
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
+      _forgotPasswordProvider.stream.listen((event) {
+        switch (event.state) {
+          case ForgotPasswordEventState.error:
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text(
+                event.data,
+                style: ThemeTexTStyle.regular(color: ThemeColors.white),
+              ),
+              backgroundColor: ThemeColors.accent,
+            ));
+            break;
+          case ForgotPasswordEventState.success:
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (_) => ForgottenPasswordCodeConfirmation()));
+            break;
+          default:
+            return;
+        }
+      });
     });
   }
 

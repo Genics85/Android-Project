@@ -1,20 +1,45 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:project_android/components/buttons.dart';
-import 'package:project_android/locator.dart';
-import 'package:project_android/modules/post/contribution_provider.dart';
-import 'package:project_android/themes/borderRadius.dart';
-import 'package:project_android/themes/padding.dart';
+import 'package:go_find_me/components/buttons.dart';
+import 'package:go_find_me/components/dialogs.dart';
+import 'package:go_find_me/locator.dart';
+import 'package:go_find_me/models/OnPopModel.dart';
+import 'package:go_find_me/modules/post/contribution_provider.dart';
+import 'package:go_find_me/themes/borderRadius.dart';
+import 'package:go_find_me/themes/padding.dart';
 import 'package:flutter_time_picker_spinner/flutter_time_picker_spinner.dart';
-import 'package:project_android/themes/textStyle.dart';
-import 'package:project_android/themes/theme_colors.dart';
-import 'package:project_android/ui/locationTextField.dart';
+import 'package:go_find_me/themes/textStyle.dart';
+import 'package:go_find_me/themes/theme_colors.dart';
+import 'package:go_find_me/ui/locationTextField.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
-class Contribution extends StatelessWidget {
+class Contribution extends StatefulWidget {
   Contribution({Key? key, this.postId = ""}) : super(key: key);
   final String postId;
+
+  @override
+  State<Contribution> createState() => _ContributionState();
+}
+
+class _ContributionState extends State<Contribution> {
+  final _contributionsProvider = ContributionsProvider();
+
+  @override
+  void initState() {
+    super.initState();
+    _contributionsProvider.stream.listen((event) {
+      switch (event.state) {
+        case ContribuionEventState.error:
+          Dialogs.errorDialog(context, event.data);
+          break;
+        case ContribuionEventState.success:
+          Navigator.pop(context, OnPopModel(reloadPrev: true));
+          break;
+        default:
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,29 +49,30 @@ class Contribution extends StatelessWidget {
         appBar: AppBar(
           title: Text("Contribute"),
         ),
+        backgroundColor: ThemeColors.white,
         body: SingleChildScrollView(
           child: Container(
-            margin: EdgeInsets.only(
-                top: ThemePadding.padBase * 1.5,
-                bottom: ThemePadding.padBase * 1.5,
-                left: ThemePadding.padBase * 1.5,
-                right: ThemePadding.padBase * 1.5),
+            // margin: EdgeInsets.only(
+            //     top: ThemePadding.padBase * 1.5,
+            //     bottom: ThemePadding.padBase * 1.5,
+            //     left: ThemePadding.padBase * 1.5,
+            //     right: ThemePadding.padBase * 1.5),
             padding: EdgeInsets.all(ThemePadding.padBase * 1.5),
-            decoration: BoxDecoration(
-              color: ThemeColors.white,
-              borderRadius: ThemeBorderRadius.smallRadiusAll,
-            ),
-            width: 500,
-            child: Material(
-              child: contributionContent(context, postId),
-              // child: StreamBuilder<bool>(
-              //     stream: _contributionBloc.contributionStream,
-              //     builder: (context, snapshot) {
-              //       return !snapshot.hasData || !snapshot.data!
-              //           ? queryView(context)
-              //           : contributionContent(context);
-              //     }),
-            ),
+            // decoration: BoxDecoration(
+            //   color: ThemeColors.white,
+            //   borderRadius: ThemeBorderRadius.smallRadiusAll,
+            // ),
+            // width: 500,
+            child:
+                Consumer<ContributionsProvider>(builder: (context, model, _) {
+              return Material(
+                child: model.lastEvent!.state == ContribuionEventState.loading
+                    ? Center(
+                        child: CircularProgressIndicator(),
+                      )
+                    : contributionContent(context, widget.postId),
+              );
+            }),
           ),
         ),
       ),

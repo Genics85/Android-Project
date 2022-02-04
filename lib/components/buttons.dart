@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:project_android/themes/borderRadius.dart';
-import 'package:project_android/themes/dropShadows.dart';
-import 'package:project_android/themes/textStyle.dart';
-import 'package:project_android/themes/theme_colors.dart';
+import 'package:go_find_me/themes/borderRadius.dart';
+import 'package:go_find_me/themes/dropShadows.dart';
+import 'package:go_find_me/themes/textStyle.dart';
+import 'package:go_find_me/themes/theme_colors.dart';
 
 class ThemeButton {
   static Widget longButtonPrim({String? text, onpressed}) {

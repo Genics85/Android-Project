@@ -1,15 +1,15 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:project_android/components/dialogs.dart';
-import 'package:project_android/core/network/networkError.dart';
-import 'package:project_android/locator.dart';
-import 'package:project_android/models/UserModel.dart';
-import 'package:project_android/modules/auth/authProvider.dart';
-import 'package:project_android/modules/base_provider.dart';
-import 'package:project_android/services/api.dart';
-import 'package:project_android/services/sharedPref.dart';
-import 'package:project_android/ui/home_view.dart';
+import 'package:go_find_me/components/dialogs.dart';
+import 'package:go_find_me/core/network/networkError.dart';
+import 'package:go_find_me/locator.dart';
+import 'package:go_find_me/models/UserModel.dart';
+import 'package:go_find_me/modules/auth/authProvider.dart';
+import 'package:go_find_me/modules/base_provider.dart';
+import 'package:go_find_me/services/api.dart';
+import 'package:go_find_me/services/sharedPref.dart';
+import 'package:go_find_me/ui/home_view.dart';
 import 'package:provider/provider.dart';
 
 enum VerificationEventState { idle, loading, success, error }
@@ -41,7 +41,7 @@ class VerifyAccountProvider extends BaseProvider<VerificationEvent> {
   sendOTPEmail(String email, BuildContext contextt) async {
     try {
       addEvent(VerificationEvent(state: VerificationEventState.loading));
-   
+
       await _api.sendOTPemail({"email": email});
       verificationType = VerificationType.email;
       inputVerification = true;
@@ -82,7 +82,7 @@ class VerifyAccountProvider extends BaseProvider<VerificationEvent> {
       print(user.toJson());
       Provider.of<AuthenticationProvider>(context, listen: false).currentUser =
           user;
-          addEvent(VerificationEvent(state: VerificationEventState.idle));
+      addEvent(VerificationEvent(state: VerificationEventState.idle));
       Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (context) => HomeView()));
     } on NetworkError catch (err) {

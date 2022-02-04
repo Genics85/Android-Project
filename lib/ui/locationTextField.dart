@@ -1,9 +1,9 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:project_android/components/text_fields.dart';
-import 'package:project_android/locator.dart';
-import 'package:project_android/services/placesService.dart';
+import 'package:go_find_me/components/text_fields.dart';
+import 'package:go_find_me/locator.dart';
+import 'package:go_find_me/services/placesService.dart';
 import 'package:uuid/uuid.dart';
 
 class LocationTextField extends StatefulWidget {

@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
-import 'package:project_android/components/passwordTextField.dart';
-import 'package:project_android/components/text_fields.dart';
-import 'package:project_android/modules/auth/authProvider.dart';
-import 'package:project_android/modules/auth/validators.dart';
-import 'package:project_android/themes/borderRadius.dart';
-import 'package:project_android/components/buttons.dart';
-import 'package:project_android/themes/dropShadows.dart';
-import 'package:project_android/themes/padding.dart';
-import 'package:project_android/themes/textStyle.dart';
-import 'package:project_android/themes/theme_colors.dart';
-import 'package:project_android/ui/login_view.dart';
+import 'package:go_find_me/components/passwordTextField.dart';
+import 'package:go_find_me/components/text_fields.dart';
+import 'package:go_find_me/modules/auth/authProvider.dart';
+import 'package:go_find_me/modules/auth/validators.dart';
+import 'package:go_find_me/themes/borderRadius.dart';
+import 'package:go_find_me/components/buttons.dart';
+import 'package:go_find_me/themes/dropShadows.dart';
+import 'package:go_find_me/themes/padding.dart';
+import 'package:go_find_me/themes/textStyle.dart';
+import 'package:go_find_me/themes/theme_colors.dart';
+import 'package:go_find_me/ui/login_view.dart';
 import 'package:provider/provider.dart';
 
 class SignUp extends StatelessWidget with InputDec {
@@ -161,7 +161,7 @@ class SignUp extends StatelessWidget with InputDec {
             ),
             SizedBox(height: 2 * ThemePadding.padBase),
             TextFormField(
-              autovalidateMode: AutovalidateMode.always,
+              autovalidateMode: AutovalidateMode.onUserInteraction,
               validator: (value) {
                 return AuthValidators.passwordValidate(
                     value, authProv.signUpPassword);

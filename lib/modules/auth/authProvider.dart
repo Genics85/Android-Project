@@ -1,17 +1,18 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:go_find_me/ui/welcome_page.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
-import 'package:project_android/components/dialogs.dart';
-import 'package:project_android/core/network/networkError.dart';
-import 'package:project_android/locator.dart';
-import 'package:project_android/models/UserModel.dart';
-import 'package:project_android/modules/base_provider.dart';
-import 'package:project_android/services/api.dart';
-import 'package:project_android/services/sharedPref.dart';
-import 'package:project_android/ui/home_view.dart';
-import 'package:project_android/ui/login_view.dart';
-import 'package:project_android/ui/verify_account.dart';
+import 'package:go_find_me/components/dialogs.dart';
+import 'package:go_find_me/core/network/networkError.dart';
+import 'package:go_find_me/locator.dart';
+import 'package:go_find_me/models/UserModel.dart';
+import 'package:go_find_me/modules/base_provider.dart';
+import 'package:go_find_me/services/api.dart';
+import 'package:go_find_me/services/sharedPref.dart';
+import 'package:go_find_me/ui/home_view.dart';
+import 'package:go_find_me/ui/login_view.dart';
+import 'package:go_find_me/ui/verify_account.dart';
 
 enum AuthEventState { idle, success, error, loading }
 
@@ -64,7 +65,12 @@ class AuthenticationProvider extends BaseProvider<AuthEvent> {
     notifyListeners();
   }
 
-  getStoredUser(BuildContext context) async {
+  getStoredUser(BuildContext context, {bool? firstTime}) async {
+    if (firstTime ?? false) {
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (_) => WelcomePage()));
+      return;
+    }
     Map<String, dynamic> userJson = json
         .decode((await _sharedPref.getStringValuesSF("currentUser")) ?? "{}");
     if (userJson.isEmpty) {
@@ -101,6 +107,8 @@ class AuthenticationProvider extends BaseProvider<AuthEvent> {
           "identity": loginEmail.text,
           "password": loginPassworrd.text,
         });
+        print("hello");
+        print(result!.toJson());
         if (result != null) {
           currentUser = result;
           await _sharedPref.addStringToSF(

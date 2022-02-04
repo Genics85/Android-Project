@@ -3,17 +3,17 @@ import 'dart:typed_data';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:project_android/blocs/authenticationBloc.dart';
+import 'package:go_find_me/blocs/authenticationBloc.dart';
 
-import 'package:project_android/components/dialogs.dart';
-import 'package:project_android/core/network/networkError.dart';
-import 'package:project_android/locator.dart';
-import 'package:project_android/models/OnPopModel.dart';
-import 'package:project_android/models/PostModel.dart';
-import 'package:project_android/modules/auth/authProvider.dart';
-import 'package:project_android/modules/base_provider.dart';
-import 'package:project_android/services/api.dart';
-import 'package:project_android/util/validators.dart';
+import 'package:go_find_me/components/dialogs.dart';
+import 'package:go_find_me/core/network/networkError.dart';
+import 'package:go_find_me/locator.dart';
+import 'package:go_find_me/models/OnPopModel.dart';
+import 'package:go_find_me/models/PostModel.dart';
+import 'package:go_find_me/modules/auth/authProvider.dart';
+import 'package:go_find_me/modules/base_provider.dart';
+import 'package:go_find_me/services/api.dart';
+import 'package:go_find_me/util/validators.dart';
 import 'package:provider/provider.dart';
 
 enum CreatePostEventState { idle, loading, error, success }

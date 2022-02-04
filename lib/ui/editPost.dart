@@ -2,17 +2,17 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:project_android/components/buttons.dart';
-import 'package:project_android/components/text_fields.dart';
-import 'package:project_android/locator.dart';
-import 'package:project_android/models/PostModel.dart';
-import 'package:project_android/modules/auth/authProvider.dart';
-import 'package:project_android/modules/post/edit_post_Provider.dart';
-import 'package:project_android/themes/borderRadius.dart';
-import 'package:project_android/themes/padding.dart';
-import 'package:project_android/themes/textStyle.dart';
-import 'package:project_android/themes/theme_colors.dart';
-import 'package:project_android/ui/locationTextField.dart';
+import 'package:go_find_me/components/buttons.dart';
+import 'package:go_find_me/components/text_fields.dart';
+import 'package:go_find_me/locator.dart';
+import 'package:go_find_me/models/PostModel.dart';
+import 'package:go_find_me/modules/auth/authProvider.dart';
+import 'package:go_find_me/modules/post/edit_post_Provider.dart';
+import 'package:go_find_me/themes/borderRadius.dart';
+import 'package:go_find_me/themes/padding.dart';
+import 'package:go_find_me/themes/textStyle.dart';
+import 'package:go_find_me/themes/theme_colors.dart';
+import 'package:go_find_me/ui/locationTextField.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 

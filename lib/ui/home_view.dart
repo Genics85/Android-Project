@@ -1,14 +1,29 @@
 import 'package:flutter/material.dart';
-import 'package:project_android/locator.dart';
-import 'package:project_android/themes/theme_colors.dart';
-import 'package:project_android/ui/create_post.dart';
-import 'package:project_android/ui/dashboard_view.dart';
-import 'package:project_android/ui/profile_view.dart';
+import 'package:go_find_me/locator.dart';
+import 'package:go_find_me/modules/auth/authProvider.dart';
+import 'package:go_find_me/themes/theme_colors.dart';
+import 'package:go_find_me/ui/create_post.dart';
+import 'package:go_find_me/ui/dashboard_view.dart';
+import 'package:go_find_me/ui/profile_view.dart';
+import 'package:provider/provider.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 
-class HomeView extends StatelessWidget {
+class HomeView extends StatefulWidget {
   HomeView({Key? key}) : super(key: key);
 
+  @override
+  State<HomeView> createState() => _HomeViewState();
+}
+
+class _HomeViewState extends State<HomeView> {
   PageController pageController = PageController();
+
+  @override
+  void initState() {
+    _initNotification();
+    super.initState();
+    
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -17,53 +32,13 @@ class HomeView extends StatelessWidget {
         child: DashboardView(),
       ),
 
-      // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-
-      // bottomNavigationBar: BottomAppBar(
-      //   shape: CircularNotchedRectangle(),
-      //   notchMargin: 5,
-      //   color: Colors.white,
-      //   elevation: 10,
-      //   child: Container(
-      //     padding: EdgeInsets.symmetric(horizontal: 50),
-      //     height: 50,
-      //     child: Row(
-      //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      //       children: [
-      //         IconButton(
-      //           onPressed: () {
-      //             pageController.jumpToPage(0);
-      //           },
-      //           icon: Icon(Icons.home),
-      //           color: Colors.black,
-      //         ),
-      //         InkWell(
-      //           onTap: () {
-      //             pageController.jumpToPage(1);
-      //           },
-      //           child: Container(
-      //             decoration: BoxDecoration(
-      //               color: ThemeColors.primary,
-      //               borderRadius: BorderRadius.circular(3),
-      //             ),
-      //             padding: EdgeInsets.all(7),
-      //             child: Icon(
-      //               Icons.add,
-      //               color: ThemeColors.white,
-      //             ),
-      //           ),
-      //         ),
-      //         IconButton(
-      //           onPressed: () {
-      //             pageController.jumpToPage(2);
-      //           },
-      //           icon: Icon(Icons.settings),
-      //           color: Colors.black,
-      //         )
-      //       ],
-      //     ),
-      //   ),
-      // ),
+      
     );
+  }
+
+  _initNotification(){
+    OneSignal.shared.setAppId("d03e5a6b-6f44-4784-9a1b-5c12d791ef3f");
+     OneSignal.shared
+        .setExternalUserId(Provider.of<AuthenticationProvider>(context).currentUser!.id!);
   }
 }

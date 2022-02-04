@@ -27,7 +27,7 @@ class UserModel {
       photoUrl: json["photo_url"],
       phoneNumber: json["phone_number"],
       username: json["username"],
-      id: json["_id"],
+      id: json["id"],
       confirmedAt: json["confirmed_at"] == null
           ? null
           : DateTime.parse(json["confirmed_at"]));

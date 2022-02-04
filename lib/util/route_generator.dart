@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:project_android/models/PostModel.dart';
-import 'package:project_android/ui/contribution.dart';
-import 'package:project_android/ui/editPost.dart';
-import 'package:project_android/ui/home_view.dart';
-import 'package:project_android/ui/login_view.dart';
-import 'package:project_android/ui/result_map_view.dart';
-import 'package:project_android/ui/rootView.dart';
-import 'package:project_android/ui/signup_view.dart';
-import 'package:project_android/ui/splash_view.dart';
+import 'package:go_find_me/models/PostModel.dart';
+import 'package:go_find_me/ui/contribution.dart';
+import 'package:go_find_me/ui/editPost.dart';
+import 'package:go_find_me/ui/home_view.dart';
+import 'package:go_find_me/ui/login_view.dart';
+import 'package:go_find_me/ui/result_map_view.dart';
+import 'package:go_find_me/ui/rootView.dart';
+import 'package:go_find_me/ui/signup_view.dart';
+import 'package:go_find_me/ui/splash_view.dart';
 
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings setting) {

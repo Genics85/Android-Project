@@ -1,9 +1,9 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:project_android/locator.dart';
-import 'package:project_android/models/OnPopModel.dart';
-import 'package:project_android/services/api.dart';
+import 'package:go_find_me/locator.dart';
+import 'package:go_find_me/models/OnPopModel.dart';
+import 'package:go_find_me/services/api.dart';
 
 class ContributionBloc {
   Api _api = sl<Api>();
@@ -36,7 +36,7 @@ class ContributionBloc {
     });
 
     if (response != null) {
-      Navigator.pop(context,OnPopModel(reloadPrev:true));
+      Navigator.pop(context, OnPopModel(reloadPrev: true));
     }
   }
 }

@@ -1,10 +1,10 @@
 import 'package:get_it/get_it.dart';
-import 'package:project_android/blocs/authenticationBloc.dart';
-import 'package:project_android/blocs/contributionBloc.dart';
+import 'package:go_find_me/blocs/authenticationBloc.dart';
+import 'package:go_find_me/blocs/contributionBloc.dart';
 
-import 'package:project_android/services/api.dart';
-import 'package:project_android/services/placesService.dart';
-import 'package:project_android/services/sharedPref.dart';
+import 'package:go_find_me/services/api.dart';
+import 'package:go_find_me/services/placesService.dart';
+import 'package:go_find_me/services/sharedPref.dart';
 
 GetIt sl = GetIt.instance;
 

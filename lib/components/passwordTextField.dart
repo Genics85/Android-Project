@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:project_android/themes/borderRadius.dart';
-import 'package:project_android/themes/theme_colors.dart';
+import 'package:go_find_me/themes/borderRadius.dart';
+import 'package:go_find_me/themes/theme_colors.dart';
 
 class PasswordTextField extends StatefulWidget {
   const PasswordTextField(

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:project_android/themes/textStyle.dart';
-import 'package:project_android/themes/theme_colors.dart';
+import 'package:go_find_me/themes/textStyle.dart';
+import 'package:go_find_me/themes/theme_colors.dart';
 
 class Dialogs {
   static errorDialog(BuildContext context, String text) {

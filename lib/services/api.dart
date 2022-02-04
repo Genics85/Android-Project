@@ -6,12 +6,12 @@ import 'package:flutter/material.dart';
 // import 'package:http/http.dart' as http;
 import 'package:dio/dio.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:project_android/core/network/networkError.dart';
-import 'package:project_android/locator.dart';
-import 'package:project_android/models/PostModel.dart';
-import 'package:project_android/models/PostQueryResponse.dart';
-import 'package:project_android/models/UserModel.dart';
-import 'package:project_android/services/sharedPref.dart';
+import 'package:go_find_me/core/network/networkError.dart';
+import 'package:go_find_me/locator.dart';
+import 'package:go_find_me/models/PostModel.dart';
+import 'package:go_find_me/models/PostQueryResponse.dart';
+import 'package:go_find_me/models/UserModel.dart';
+import 'package:go_find_me/services/sharedPref.dart';
 
 class Api {
   SharedPreferencesService sharedPref = sl<SharedPreferencesService>();
@@ -182,10 +182,23 @@ class Api {
     try {
       Response<Map<String, dynamic>> response = await dio.post(
           '/auth/email/confirm_code/forgotten_password',
-          data: {"confirmation_token": "", "otp": code});
-      print(response.data);
+          data: {"confirmation_token": token, "otp": code});
+      await sharedPref.removeFromSF('forgotten_password_token');
+      await sharedPref.addStringToSF(
+          'change_password_token', response.data!['token']);
     } on DioError catch (err) {
       throw new NetworkError(err);
+    }
+  }
+
+  Future<void> submitNewPassword(String newPassword) async {
+    String? token = await sharedPref.getStringValuesSF('change_password_token');
+    try {
+      Response<Map<String, dynamic>> response = await dio.put(
+          '/auth/change_password/forgotten_password',
+          data: {'token': token, 'newPassword': newPassword});
+    } on DioError catch (error) {
+      throw new NetworkError(error);
     }
   }
 

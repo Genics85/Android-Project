@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:project_android/core/network/networkError.dart';
-import 'package:project_android/locator.dart';
-import 'package:project_android/modules/base_provider.dart';
-import 'package:project_android/services/api.dart';
+import 'package:go_find_me/core/network/networkError.dart';
+import 'package:go_find_me/locator.dart';
+import 'package:go_find_me/modules/base_provider.dart';
+import 'package:go_find_me/services/api.dart';
 
-enum ForgotPasswordEventState { idle, loading, error, success }
+enum ForgotPasswordEventState { idle, loading, changePass, error, success }
 
 class ForgotPasswordEvent<T> {
   final T? data;
@@ -15,9 +15,9 @@ class ForgotPasswordEvent<T> {
 class ForgotPasswordProvider extends BaseProvider<ForgotPasswordEvent> {
   Api _api = sl<Api>();
 
+// Identity Verification Variables
   TextEditingController _emailField = TextEditingController();
   GlobalKey<FormState> _formKey = GlobalKey();
-
   TextEditingController get emailFeld => _emailField;
   GlobalKey<FormState> get formKey => _formKey;
 

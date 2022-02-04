@@ -1,9 +1,9 @@
 // import 'package:flutter/material.dart';
-// import 'package:project_android/blocs/authenticationBloc.dart';
-// import 'package:project_android/locator.dart';
-// import 'package:project_android/models/UserModel.dart';
-// import 'package:project_android/ui/home_view.dart';
-// import 'package:project_android/ui/login_view.dart';
+// import 'package:go_find_me/blocs/authenticationBloc.dart';
+// import 'package:go_find_me/locator.dart';
+// import 'package:go_find_me/models/UserModel.dart';
+// import 'package:go_find_me/ui/home_view.dart';
+// import 'package:go_find_me/ui/login_view.dart';
 
 // class RootView extends StatelessWidget {
 //   RootView({Key? key}) : super(key: key);

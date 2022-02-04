@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:project_android/themes/theme_colors.dart';
+import 'package:go_find_me/themes/theme_colors.dart';
 
 class ThemeDropShadow {
   static List<BoxShadow> bigShadow = [

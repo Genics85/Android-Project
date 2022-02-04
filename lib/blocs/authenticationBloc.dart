@@ -7,13 +7,13 @@
 // import 'package:flutter/widgets.dart';
 // import 'package:google_sign_in/google_sign_in.dart';
 // // import 'package:email_validator/email_validator.dart';
-// import 'package:project_android/locator.dart';
-// import 'package:project_android/models/UserModel.dart';
-// import 'package:project_android/services/api.dart';
-// import 'package:project_android/themes/textStyle.dart';
-// import 'package:project_android/themes/theme_colors.dart';
-// import 'package:project_android/ui/home_view.dart';
-// import 'package:project_android/ui/login_view.dart';
+// import 'package:go_find_me/locator.dart';
+// import 'package:go_find_me/models/UserModel.dart';
+// import 'package:go_find_me/services/api.dart';
+// import 'package:go_find_me/themes/textStyle.dart';
+// import 'package:go_find_me/themes/theme_colors.dart';
+// import 'package:go_find_me/ui/home_view.dart';
+// import 'package:go_find_me/ui/login_view.dart';
 
 // class AuthenticationBloc {
 //   GoogleSignIn _googleSignIn = GoogleSignIn();

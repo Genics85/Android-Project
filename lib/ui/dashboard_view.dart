@@ -4,23 +4,25 @@ import 'package:carousel_slider/carousel_slider.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:project_android/components/buttons.dart';
-import 'package:project_android/components/text_fields.dart';
-import 'package:project_android/models/OnPopModel.dart';
-import 'package:project_android/models/PostModel.dart';
-import 'package:project_android/modules/auth/authProvider.dart';
-import 'package:project_android/modules/post/dashboard_provider.dart';
-import 'package:project_android/themes/borderRadius.dart';
-import 'package:project_android/themes/dropShadows.dart';
-import 'package:project_android/themes/padding.dart';
-import 'package:project_android/themes/textStyle.dart';
-import 'package:project_android/themes/theme_colors.dart';
+import 'package:go_find_me/components/buttons.dart';
+import 'package:go_find_me/components/text_fields.dart';
+import 'package:go_find_me/models/OnPopModel.dart';
+import 'package:go_find_me/models/PostModel.dart';
+import 'package:go_find_me/modules/auth/authProvider.dart';
+import 'package:go_find_me/modules/post/dashboard_provider.dart';
+import 'package:go_find_me/themes/borderRadius.dart';
+import 'package:go_find_me/themes/dropShadows.dart';
+import 'package:go_find_me/themes/padding.dart';
+import 'package:go_find_me/themes/textStyle.dart';
+import 'package:go_find_me/themes/theme_colors.dart';
 import 'package:intl/intl.dart';
-import 'package:project_android/ui/contribution.dart';
-import 'package:project_android/ui/create_post.dart';
-import 'package:project_android/ui/editPost.dart';
-import 'package:project_android/ui/result_map_view.dart';
+import 'package:go_find_me/ui/contribution.dart';
+import 'package:go_find_me/ui/create_post.dart';
+import 'package:go_find_me/ui/editPost.dart';
+import 'package:go_find_me/ui/result_map_view.dart';
 import 'package:provider/provider.dart';
+import 'package:wc_flutter_share/wc_flutter_share.dart';
+import 'package:http/http.dart' show get;
 
 class DashboardView extends StatefulWidget {
   DashboardView({Key? key}) : super(key: key);
@@ -48,116 +50,113 @@ class _DashboardViewState extends State<DashboardView> {
       create: (context) => _dashBoardProvider,
       child: Consumer2<DashboardProvider, AuthenticationProvider>(
           builder: (context, dashboardProv, authProv, _) {
-        return SafeArea(
-          child: Scaffold(
-            drawer: Drawer(
-              child: ListView(
-                children: [
-                  ListTile(
-                    title: Text(
-                      "Logout",
-                      style: ThemeTexTStyle.regularPrim,
-                    ),
-                    onTap: () {
-                      Scaffold.of(context).openDrawer();
-                      authProv.logOut(context);
-                    },
-                  )
-                ],
-              ),
-            ),
-            floatingActionButton: FloatingActionButton(
-              focusColor: ThemeColors.primary,
-              child: Icon(Icons.add),
-              onPressed: () async {
-                OnPopModel? onPopModel = await Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => CreatePostView()));
-                if (onPopModel != null && onPopModel.reloadPrev) {
-                  dashboardProv.getFeedBody();
-                }
-              },
-            ),
-            body: SafeArea(
-              child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 10),
-                child: RefreshIndicator(
-                  onRefresh: () async {
-                    await dashboardProv.getFeedBody();
-                  },
-                  child: CustomScrollView(
-                    controller: dashboardProv.scrollContoller,
-                    clipBehavior: Clip.none,
-                    slivers: [
-                      SliverAppBar(
-                        floating: true,
-                        title: AppBarWidget(),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.only(
-                            bottomLeft: Radius.circular(20),
-                            bottomRight: Radius.circular(20),
-                          ),
-                        ),
-                        automaticallyImplyLeading: false,
-                        elevation: 20,
-                        shadowColor: ThemeColors.black,
-                        backgroundColor: ThemeColors.white,
-                      ),
-                      SliverList(
-                        delegate: SliverChildListDelegate(dashboardProv
-                                        .lastEvent?.state ==
-                                    DashBoardEventState.isloading &&
-                                (dashboardProv.currentData?.length == 0 ||
-                                    dashboardProv.currentData == null)
-                            ? [
-                                Center(
-                                  child: CircularProgressIndicator(),
-                                ),
-                              ]
-                            : dashboardProv.currentData?.length == 0 ||
-                                    dashboardProv.currentData == null
-                                ? [
-                                    Center(
-                                      child: Text(
-                                        "No Posts To Show",
-                                        style: ThemeTexTStyle.headerPrim,
-                                      ),
-                                    ),
-                                    SizedBox(height: 15),
-                                    Center(
-                                        child: ThemeButton.ButtonSec(
-                                            text: "Retry",
-                                            onpressed: () {
-                                              dashboardProv.getFeedBody();
-                                            }))
-                                  ]
-                                : [
-                                    dashboardProv.lastEvent?.state ==
-                                            DashBoardEventState.isloading
-                                        ? LinearProgressIndicator()
-                                        : SizedBox(),
-                                    ...List.generate(
-                                        dashboardProv.currentData!.length + 1,
-                                        (index) {
-                                      if (index ==
-                                          dashboardProv.currentData!.length)
-                                        return Visibility(
-                                          visible:
-                                              dashboardProv.lastEvent?.state ==
-                                                  DashBoardEventState.isloading,
-                                          child: Center(
-                                            child: CircularProgressIndicator(),
-                                          ),
-                                        );
-                                      return PostCard(
-                                        post:
-                                            dashboardProv.currentData![index]!,
-                                      );
-                                    }),
-                                    SizedBox(height: 30)
-                                  ]),
-                      )
-                    ],
+        return Scaffold(
+          drawer: Drawer(
+            child: ListView(
+              children: [
+                ListTile(
+                  title: Text(
+                    "Logout",
+                    style: ThemeTexTStyle.regularPrim,
                   ),
+                  onTap: () {
+                    Scaffold.of(context).openDrawer();
+                    authProv.logOut(context);
+                  },
+                )
+              ],
+            ),
+          ),
+          floatingActionButton: FloatingActionButton(
+            focusColor: ThemeColors.primary,
+            child: Icon(Icons.add),
+            onPressed: () async {
+              OnPopModel? onPopModel = await Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => CreatePostView()));
+              if (onPopModel != null && onPopModel.reloadPrev) {
+                dashboardProv.getFeedBody();
+              }
+            },
+          ),
+          body: SafeArea(
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 10),
+              child: RefreshIndicator(
+                onRefresh: () async {
+                  await dashboardProv.getFeedBody();
+                },
+                child: CustomScrollView(
+                  controller: dashboardProv.scrollContoller,
+                  clipBehavior: Clip.none,
+                  slivers: [
+                    SliverAppBar(
+                      floating: true,
+                      title: AppBarWidget(),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.only(
+                          bottomLeft: Radius.circular(20),
+                          bottomRight: Radius.circular(20),
+                        ),
+                      ),
+                      automaticallyImplyLeading: false,
+                      elevation: 20,
+                      shadowColor: ThemeColors.black,
+                      backgroundColor: ThemeColors.white,
+                    ),
+                    SliverList(
+                      delegate: SliverChildListDelegate(dashboardProv
+                                      .lastEvent?.state ==
+                                  DashBoardEventState.isloading &&
+                              (dashboardProv.currentData?.length == 0 ||
+                                  dashboardProv.currentData == null)
+                          ? [
+                              Center(
+                                child: CircularProgressIndicator(),
+                              ),
+                            ]
+                          : dashboardProv.currentData?.length == 0 ||
+                                  dashboardProv.currentData == null
+                              ? [
+                                  Center(
+                                    child: Text(
+                                      "No Posts To Show",
+                                      style: ThemeTexTStyle.headerPrim,
+                                    ),
+                                  ),
+                                  SizedBox(height: 15),
+                                  Center(
+                                      child: ThemeButton.ButtonSec(
+                                          text: "Retry",
+                                          onpressed: () {
+                                            dashboardProv.getFeedBody();
+                                          }))
+                                ]
+                              : [
+                                  dashboardProv.lastEvent?.state ==
+                                          DashBoardEventState.isloading
+                                      ? LinearProgressIndicator()
+                                      : SizedBox(),
+                                  ...List.generate(
+                                      dashboardProv.currentData!.length + 1,
+                                      (index) {
+                                    if (index ==
+                                        dashboardProv.currentData!.length)
+                                      return Visibility(
+                                        visible:
+                                            dashboardProv.lastEvent?.state ==
+                                                DashBoardEventState.isloading,
+                                        child: Center(
+                                          child: CircularProgressIndicator(),
+                                        ),
+                                      );
+                                    return PostCard(
+                                      post: dashboardProv.currentData![index]!,
+                                    );
+                                  }),
+                                  SizedBox(height: 30)
+                                ]),
+                    )
+                  ],
                 ),
               ),
             ),
@@ -182,6 +181,19 @@ class PostCard extends StatefulWidget {
 
 class _PostCardState extends State<PostCard> {
   bool descContainerSize = false;
+
+  Future<void> _share({required String text, required String imageLink}) async {
+    var response =
+        await get(Uri.parse("https://go-find-me.herokuapp.com/$imageLink"));
+    await WcFlutterShare.share(
+      sharePopupTitle: "GoFindMe",
+      text: """$text      
+      $text""",
+      bytesOfFile: response.bodyBytes,
+      fileName: "Missing.png",
+      mimeType: 'image/png',
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -348,21 +360,28 @@ class _PostCardState extends State<PostCard> {
                             )
                           ],
                         ),
-                        Row(
-                          children: [
-                            Icon(
-                              Icons.share,
-                              color: ThemeColors.grey,
-                            ),
-                            SizedBox(
-                              width: ThemePadding.padBase / 2,
-                            ),
-                            Text(
-                              "${widget.post.shares!}",
-                              style: ThemeTexTStyle.regular(
-                                  color: ThemeColors.grey),
-                            )
-                          ],
+                        InkWell(
+                          onTap: () async {
+                            await _share(
+                                text: widget.post.desc!,
+                                imageLink: widget.post.imgs![0]);
+                          },
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.share,
+                                color: ThemeColors.grey,
+                              ),
+                              SizedBox(
+                                width: ThemePadding.padBase / 2,
+                              ),
+                              Text(
+                                "${widget.post.shares!}",
+                                style: ThemeTexTStyle.regular(
+                                    color: ThemeColors.grey),
+                              )
+                            ],
+                          ),
                         ),
                         InkWell(
                           onTap: () {
@@ -397,21 +416,28 @@ class _PostCardState extends State<PostCard> {
                             )
                           ],
                         ),
-                        Row(
-                          children: [
-                            Icon(
-                              Icons.share,
-                              color: ThemeColors.grey,
-                            ),
-                            SizedBox(
-                              width: ThemePadding.padBase / 2,
-                            ),
-                            Text(
-                              "${widget.post.shares!}",
-                              style: ThemeTexTStyle.regular(
-                                  color: ThemeColors.grey),
-                            )
-                          ],
+                        InkWell(
+                          onTap: () async {
+                            await _share(
+                                text: widget.post.desc!,
+                                imageLink: widget.post.imgs![0]);
+                          },
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.share,
+                                color: ThemeColors.grey,
+                              ),
+                              SizedBox(
+                                width: ThemePadding.padBase / 2,
+                              ),
+                              Text(
+                                "${widget.post.shares!}",
+                                style: ThemeTexTStyle.regular(
+                                    color: ThemeColors.grey),
+                              )
+                            ],
+                          ),
                         ),
                         InkWell(
                           onTap: () async {

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:project_android/components/buttons.dart';
-import 'package:project_android/components/text_fields.dart';
-import 'package:project_android/modules/auth/authProvider.dart';
-import 'package:project_android/modules/auth/verify_account_provider.dart';
-import 'package:project_android/themes/padding.dart';
-import 'package:project_android/themes/textStyle.dart';
-import 'package:project_android/themes/theme_colors.dart';
+import 'package:go_find_me/components/buttons.dart';
+import 'package:go_find_me/components/text_fields.dart';
+import 'package:go_find_me/modules/auth/authProvider.dart';
+import 'package:go_find_me/modules/auth/verify_account_provider.dart';
+import 'package:go_find_me/themes/padding.dart';
+import 'package:go_find_me/themes/textStyle.dart';
+import 'package:go_find_me/themes/theme_colors.dart';
 import 'package:pinput/pin_put/pin_put.dart';
 import 'package:provider/provider.dart';
 
@@ -23,7 +23,6 @@ class VerifyAccount extends StatelessWidget with InputDec {
         body: SafeArea(
           child: Consumer<VerifyAccountProvider>(
               builder: (context, verifyAccProv, _) {
-          
             return Container(
               height: double.infinity,
               padding: EdgeInsets.all(ThemePadding.padBase * 3),
@@ -51,7 +50,8 @@ class VerifyAccount extends StatelessWidget with InputDec {
                                     VerificationType.email
                                 ? emailVerificationInput(
                                     _scaffolKey.currentContext!)
-                                : phoneVerificationInput(_scaffolKey.currentContext!)
+                                : phoneVerificationInput(
+                                    _scaffolKey.currentContext!)
                             : verificationTypeSelect(
                                 _scaffolKey.currentContext!),
                       ],

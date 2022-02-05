@@ -20,9 +20,10 @@ class _HomeViewState extends State<HomeView> {
 
   @override
   void initState() {
-    _initNotification();
     super.initState();
-    
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
+      _initNotification();
+    });
   }
 
   @override
@@ -31,14 +32,14 @@ class _HomeViewState extends State<HomeView> {
       body: SafeArea(
         child: DashboardView(),
       ),
-
-      
     );
   }
 
-  _initNotification(){
+  _initNotification() {
     OneSignal.shared.setAppId("d03e5a6b-6f44-4784-9a1b-5c12d791ef3f");
-     OneSignal.shared
-        .setExternalUserId(Provider.of<AuthenticationProvider>(context).currentUser!.id!);
+    OneSignal.shared.setExternalUserId(
+        Provider.of<AuthenticationProvider>(context, listen: false)
+            .currentUser!
+            .id!);
   }
 }

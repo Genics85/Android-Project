@@ -280,7 +280,23 @@ class Api {
 
       PostQueryResponse postQueryResponse =
           PostQueryResponse.fromJson(resultData);
-      List<Post?>? posts;
+
+      return postQueryResponse;
+    } on DioError catch (err) {
+      throw NetworkError(err);
+    }
+  }
+
+  Future<PostQueryResponse> getMyPosts(
+      {required String userId, String? url}) async {
+    try {
+      Response<Map<String, dynamic>> response =
+          await dio.get(url ?? "/post/myposts/$userId");
+
+      Map<String, dynamic> resultData = response.data!;
+
+      PostQueryResponse postQueryResponse =
+          PostQueryResponse.fromJson(resultData);
       return postQueryResponse;
     } on DioError catch (err) {
       throw NetworkError(err);

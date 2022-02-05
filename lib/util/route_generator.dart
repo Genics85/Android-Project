@@ -17,8 +17,8 @@ class RouteGenerator {
 
       case "/dashboard":
         return MaterialPageRoute(builder: (context) => HomeView());
-      case "/":
-        return MaterialPageRoute(builder: (context) => SplashScreen());
+      // case "/":
+      //   return MaterialPageRoute(builder: (context) => SplashScreen());
       case "/postResultMap":
         return MaterialPageRoute(builder: (context) => ResultMapView());
       case "/login":
@@ -39,7 +39,7 @@ class RouteGenerator {
                 ));
 
       default:
-        return MaterialPageRoute(builder: (context) => SplashScreen());
+      // return MaterialPageRoute(builder: (context) => SplashScreen());
     }
   }
 }

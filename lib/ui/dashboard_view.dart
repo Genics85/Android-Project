@@ -16,6 +16,8 @@ import 'package:go_find_me/themes/dropShadows.dart';
 import 'package:go_find_me/themes/padding.dart';
 import 'package:go_find_me/themes/textStyle.dart';
 import 'package:go_find_me/themes/theme_colors.dart';
+import 'package:go_find_me/ui/bookmarked_post_page.dart';
+import 'package:go_find_me/ui/contributed_posts_page.dart';
 import 'package:go_find_me/ui/my_posts_page.dart';
 import 'package:intl/intl.dart';
 import 'package:go_find_me/ui/contribution.dart';
@@ -100,8 +102,10 @@ class _DashboardViewState extends State<DashboardView> {
                   ),
                   onTap: () {
                     Scaffold.of(context).openDrawer();
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (_) => MyPostsPage()));
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (_) => BookMarkedPostsPage()));
                   },
                 ),
                 ListTile(
@@ -112,7 +116,7 @@ class _DashboardViewState extends State<DashboardView> {
                   onTap: () {
                     Scaffold.of(context).openDrawer();
                     Navigator.push(context,
-                        MaterialPageRoute(builder: (_) => MyPostsPage()));
+                        MaterialPageRoute(builder: (_) => EngagedPosts()));
                   },
                 ),
                 ListTile(
@@ -211,6 +215,13 @@ class _DashboardViewState extends State<DashboardView> {
                                         ),
                                       );
                                     return PostCard(
+                                      onBookmarkPost: () async {
+                                        dashboardProv.bookmarkPost(
+                                          context,
+                                          dashboardProv
+                                              .currentData![index]!.id!,
+                                        );
+                                      },
                                       post: dashboardProv.currentData![index]!,
                                       callBack: dashboardProv.getFeedBody,
                                       deletePost: () async {

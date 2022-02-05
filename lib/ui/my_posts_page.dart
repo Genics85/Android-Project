@@ -116,6 +116,14 @@ class _MyPostsPageState extends State<MyPostsPage> {
                                                     ),
                                                   );
                                                 return PostCard(
+                                                  onBookmarkPost: () async {
+                                                    myPostProv.bookmarkPost(
+                                                      context,
+                                                      myPostProv
+                                                          .currentData![index]!
+                                                          .id!,
+                                                    );
+                                                  },
                                                   post: myPostProv
                                                       .currentData![index]!,
                                                   callBack:

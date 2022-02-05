@@ -9,16 +9,16 @@ import 'package:go_find_me/modules/base_provider.dart';
 import 'package:go_find_me/services/api.dart';
 import 'package:provider/provider.dart';
 
-enum MyPostEventState { idle, isloading, error, success }
+enum ContributedPostsState { idle, isloading, error, success }
 
-class MyPostEvent<T> {
+class ContributedPostEvent<T> {
   final T? data;
-  final MyPostEventState state;
+  final ContributedPostsState state;
 
-  MyPostEvent({this.data, required this.state});
+  ContributedPostEvent({this.data, required this.state});
 }
 
-class MyPostsProvider extends BaseProvider<MyPostEvent> {
+class ContributedPostsProvider extends BaseProvider<ContributedPostEvent> {
   BuildContext rootContext;
   bool confirmDelete = false;
   Api _api = sl<Api>();
@@ -29,10 +29,29 @@ class MyPostsProvider extends BaseProvider<MyPostEvent> {
 
   ScrollController get scrollController => _scrollController;
 
-  MyPostsProvider({required this.rootContext}) {
+  ContributedPostsProvider({required this.rootContext}) {
     _scrollController = ScrollController()
       ..addListener(scrollListenerForPagination);
     getFeedBody();
+  }
+
+  bookmarkPost(BuildContext context, String id) async {
+    addEvent(ContributedPostEvent(state: ContributedPostsState.isloading));
+
+    try {
+      await _api.bookmarkPost(
+        userId: Provider.of<AuthenticationProvider>(rootContext, listen: false)
+            .currentUser!
+            .id!,
+        postId: id,
+      );
+      Navigator.of(context).pop();
+      addEvent(ContributedPostEvent(state: ContributedPostsState.success));
+    } on NetworkError catch (netErr) {
+      Navigator.of(context).pop();
+      addEvent(ContributedPostEvent(state: ContributedPostsState.error));
+      Dialogs.errorDialog(rootContext, netErr.error);
+    }
   }
 
   void scrollListenerForPagination() {
@@ -43,12 +62,12 @@ class MyPostsProvider extends BaseProvider<MyPostEvent> {
   }
 
   Future<void> _getMorePosts() async {
-    if (lastEvent!.state == MyPostEventState.isloading || nextPostPage == null)
-      return;
+    if (lastEvent!.state == ContributedPostsState.isloading ||
+        nextPostPage == null) return;
 
     try {
-      addEvent(MyPostEvent(state: MyPostEventState.isloading));
-      PostQueryResponse response = await _api.getMyPosts(
+      addEvent(ContributedPostEvent(state: ContributedPostsState.isloading));
+      PostQueryResponse response = await _api.getContributedPosts(
           userId:
               Provider.of<AuthenticationProvider>(rootContext, listen: false)
                   .currentUser!
@@ -57,41 +76,22 @@ class MyPostsProvider extends BaseProvider<MyPostEvent> {
       currentData!.addAll(response.posts!);
       nextPostPage = response.next;
       if (response == null) {
-        addEvent(MyPostEvent(state: MyPostEventState.error));
+        addEvent(ContributedPostEvent(state: ContributedPostsState.error));
         return;
       }
 
-      addEvent(MyPostEvent(state: MyPostEventState.success));
+      addEvent(ContributedPostEvent(state: ContributedPostsState.success));
     } on NetworkError catch (netErr) {
-      addEvent(MyPostEvent(state: MyPostEventState.error));
-      Dialogs.errorDialog(rootContext, netErr.error);
-    }
-  }
-
-  bookmarkPost(BuildContext context, String id) async {
-    addEvent(MyPostEvent(state: MyPostEventState.isloading));
-
-    try {
-      await _api.bookmarkPost(
-        userId: Provider.of<AuthenticationProvider>(rootContext, listen: false)
-            .currentUser!
-            .id!,
-        postId: id,
-      );
-      Navigator.of(context).pop();
-      addEvent(MyPostEvent(state: MyPostEventState.success));
-    } on NetworkError catch (netErr) {
-      Navigator.of(context).pop();
-      addEvent(MyPostEvent(state: MyPostEventState.error));
+      addEvent(ContributedPostEvent(state: ContributedPostsState.error));
       Dialogs.errorDialog(rootContext, netErr.error);
     }
   }
 
   Future<void> getFeedBody() async {
-    addEvent(MyPostEvent(state: MyPostEventState.isloading));
+    addEvent(ContributedPostEvent(state: ContributedPostsState.isloading));
 
     try {
-      PostQueryResponse response = await _api.getMyPosts(
+      PostQueryResponse response = await _api.getContributedPosts(
         userId: Provider.of<AuthenticationProvider>(rootContext, listen: false)
             .currentUser!
             .id!,
@@ -99,29 +99,29 @@ class MyPostsProvider extends BaseProvider<MyPostEvent> {
       currentData = response.posts;
       nextPostPage = response.next;
       if (response == null) {
-        addEvent(MyPostEvent(state: MyPostEventState.error));
+        addEvent(ContributedPostEvent(state: ContributedPostsState.error));
         return;
       }
 
-      addEvent(MyPostEvent(state: MyPostEventState.success));
+      addEvent(ContributedPostEvent(state: ContributedPostsState.success));
     } on NetworkError catch (netErr) {
-      addEvent(MyPostEvent(state: MyPostEventState.error));
+      addEvent(ContributedPostEvent(state: ContributedPostsState.error));
       Dialogs.errorDialog(rootContext, netErr.error);
     }
   }
 
   deletePost(String postId, BuildContext context) async {
-    addEvent(MyPostEvent(state: MyPostEventState.isloading));
+    addEvent(ContributedPostEvent(state: ContributedPostsState.isloading));
 
     try {
       var response = await _api.deletePost(postId);
 
       Navigator.of(context).pop();
       currentData?.removeWhere((element) => element?.id == postId);
-      addEvent(MyPostEvent(state: MyPostEventState.success));
+      addEvent(ContributedPostEvent(state: ContributedPostsState.success));
     } on NetworkError catch (err) {
+      addEvent(ContributedPostEvent(state: ContributedPostsState.error));
       Navigator.of(context).pop();
-      addEvent(MyPostEvent(state: MyPostEventState.error));
       Dialogs.errorDialog(context, err.error);
     }
   }

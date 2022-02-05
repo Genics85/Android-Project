@@ -26,11 +26,13 @@ class PostCard extends StatefulWidget {
     required this.post,
     required this.callBack,
     required this.deletePost,
+    required this.onBookmarkPost,
   }) : super(key: key);
 
   final Post post;
-  final void Function() callBack;
-  final void Function() deletePost;
+  final Future<void> Function() callBack;
+  final Future<void> Function() deletePost;
+  final Future<void> Function() onBookmarkPost;
 
   @override
   State<PostCard> createState() => _PostCardState();
@@ -75,33 +77,33 @@ class _PostCardState extends State<PostCard> {
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
-              widget.post.userId ==
-                      Provider.of<AuthenticationProvider>(context)
-                          .currentUser
-                          ?.id
-                  ? InkWell(
-                      onTap: () async {
-                        OnPopModel res = await showDialog(
-                            context: context,
-                            builder: (context) {
-                              return AlertDialog(
-                                title: Text(
-                                  "Post Actions",
-                                  style: ThemeTexTStyle.headerPrim,
-                                ),
-                                content: PostOptionsDialog(
-                                  post: widget.post,
-                                  deletePost: widget.deletePost,
-                                ),
-                              );
-                            });
-                        if (res.reloadPrev) widget.callBack();
-                      },
-                      child: Icon(
-                        Icons.more_vert,
-                        color: ThemeColors.grey,
-                      ))
-                  : SizedBox.shrink(),
+              InkWell(
+                  onTap: () async {
+                    OnPopModel res = await showDialog(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            title: Text(
+                              "Post Actions",
+                              style: ThemeTexTStyle.headerPrim,
+                            ),
+                            content: PostOptionsDialog(
+                              isOwner: widget.post.userId ==
+                                  Provider.of<AuthenticationProvider>(context)
+                                      .currentUser
+                                      ?.id,
+                              post: widget.post,
+                              deletePost: widget.deletePost,
+                              onBookmarkPost: widget.onBookmarkPost,
+                            ),
+                          );
+                        });
+                    if (res.reloadPrev) widget.callBack();
+                  },
+                  child: Icon(
+                    Icons.more_vert,
+                    color: ThemeColors.grey,
+                  ))
             ],
           ),
           Row(
@@ -180,6 +182,7 @@ class _PostCardState extends State<PostCard> {
               });
             },
             child: Container(
+              alignment: Alignment.center,
               padding: EdgeInsets.all(5),
               child: Text(
                 descContainerSize ? "Show Less" : "Read More",
@@ -326,10 +329,17 @@ class _PostCardState extends State<PostCard> {
 }
 
 class PostOptionsDialog extends StatefulWidget {
-  PostOptionsDialog({Key? key, required this.post, required this.deletePost})
-      : super(key: key);
+  PostOptionsDialog({
+    Key? key,
+    required this.post,
+    required this.deletePost,
+    required this.isOwner,
+    required this.onBookmarkPost,
+  }) : super(key: key);
   final Post post;
-  final Function deletePost;
+  final Future<void> Function() deletePost;
+  final bool isOwner;
+  final Future<void> Function() onBookmarkPost;
 
   @override
   State<PostOptionsDialog> createState() => _PostOptionsDialogState();
@@ -337,16 +347,30 @@ class PostOptionsDialog extends StatefulWidget {
 
 class _PostOptionsDialogState extends State<PostOptionsDialog> {
   bool isConfirmDelete = false;
+  bool isLoading = false;
 
   @override
   Widget build(BuildContext context) {
+    if (isLoading)
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [Center(child: CircularProgressIndicator())],
+      );
     return isConfirmDelete
         ? Row(
             children: [
               Expanded(
                 child: ThemeButton.ButtonPrim(
                   text: "Yes",
-                  onpressed: widget.deletePost,
+                  onpressed: () async {
+                    setState(() {
+                      isLoading = true;
+                    });
+                    await widget.deletePost();
+                    setState(() {
+                      isLoading = false;
+                    });
+                  },
                 ),
               ),
               SizedBox(
@@ -366,39 +390,49 @@ class _PostOptionsDialogState extends State<PostOptionsDialog> {
         : Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              ListTile(
-                title: Text("Edit Post"),
-                onTap: () async {
-                  OnPopModel res = await Navigator.push(context,
-                      MaterialPageRoute(builder: (context) {
-                    return EditPost(
-                      post: widget.post,
-                    );
-                  }));
-                  if (res.reloadPrev)
-                    Navigator.of(context).pop(OnPopModel(reloadPrev: true));
-                },
-              ),
-              ListTile(
-                title: Text("Delete Post"),
-                onTap: () {
-                  setState(() {
-                    isConfirmDelete = !isConfirmDelete;
-                  });
-                },
+              Visibility(
+                visible: widget.isOwner,
+                child: Column(
+                  children: [
+                    ListTile(
+                      title: Text("Edit Post"),
+                      onTap: () async {
+                        OnPopModel res = await Navigator.push(context,
+                            MaterialPageRoute(builder: (context) {
+                          return EditPost(
+                            post: widget.post,
+                          );
+                        }));
+                        if (res.reloadPrev)
+                          Navigator.of(context)
+                              .pop(OnPopModel(reloadPrev: true));
+                      },
+                    ),
+                    ListTile(
+                      title: Text("Delete Post"),
+                      onTap: () {
+                        setState(() {
+                          isConfirmDelete = !isConfirmDelete;
+                        });
+                      },
+                    ),
+                  ],
+                ),
               ),
               ListTile(
                 title: Text("Bookmark Post"),
-                onTap: () {
+                onTap: () async {
                   setState(() {
-                    isConfirmDelete = !isConfirmDelete;
+                    isLoading = true;
+                  });
+                  await widget.onBookmarkPost();
+                  setState(() {
+                    isLoading = true;
                   });
                 },
               )
             ],
           );
-
-    ;
   }
 }
 

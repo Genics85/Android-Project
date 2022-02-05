@@ -9,16 +9,16 @@ import 'package:go_find_me/modules/base_provider.dart';
 import 'package:go_find_me/services/api.dart';
 import 'package:provider/provider.dart';
 
-enum MyPostEventState { idle, isloading, error, success }
+enum BookMarkedPostsProviderState { idle, isloading, error, success }
 
-class MyPostEvent<T> {
+class BookMarkedPostsEvent<T> {
   final T? data;
-  final MyPostEventState state;
+  final BookMarkedPostsProviderState state;
 
-  MyPostEvent({this.data, required this.state});
+  BookMarkedPostsEvent({this.data, required this.state});
 }
 
-class MyPostsProvider extends BaseProvider<MyPostEvent> {
+class BookMarkedPostsProvider extends BaseProvider<BookMarkedPostsEvent> {
   BuildContext rootContext;
   bool confirmDelete = false;
   Api _api = sl<Api>();
@@ -29,7 +29,7 @@ class MyPostsProvider extends BaseProvider<MyPostEvent> {
 
   ScrollController get scrollController => _scrollController;
 
-  MyPostsProvider({required this.rootContext}) {
+  BookMarkedPostsProvider({required this.rootContext}) {
     _scrollController = ScrollController()
       ..addListener(scrollListenerForPagination);
     getFeedBody();
@@ -43,12 +43,13 @@ class MyPostsProvider extends BaseProvider<MyPostEvent> {
   }
 
   Future<void> _getMorePosts() async {
-    if (lastEvent!.state == MyPostEventState.isloading || nextPostPage == null)
-      return;
+    if (lastEvent!.state == BookMarkedPostsProviderState.isloading ||
+        nextPostPage == null) return;
 
     try {
-      addEvent(MyPostEvent(state: MyPostEventState.isloading));
-      PostQueryResponse response = await _api.getMyPosts(
+      addEvent(
+          BookMarkedPostsEvent(state: BookMarkedPostsProviderState.isloading));
+      PostQueryResponse response = await _api.getBookmarkedPost(
           userId:
               Provider.of<AuthenticationProvider>(rootContext, listen: false)
                   .currentUser!
@@ -57,19 +58,48 @@ class MyPostsProvider extends BaseProvider<MyPostEvent> {
       currentData!.addAll(response.posts!);
       nextPostPage = response.next;
       if (response == null) {
-        addEvent(MyPostEvent(state: MyPostEventState.error));
+        addEvent(
+            BookMarkedPostsEvent(state: BookMarkedPostsProviderState.error));
         return;
       }
 
-      addEvent(MyPostEvent(state: MyPostEventState.success));
+      addEvent(
+          BookMarkedPostsEvent(state: BookMarkedPostsProviderState.success));
     } on NetworkError catch (netErr) {
-      addEvent(MyPostEvent(state: MyPostEventState.error));
+      addEvent(BookMarkedPostsEvent(state: BookMarkedPostsProviderState.error));
+      Dialogs.errorDialog(rootContext, netErr.error);
+    }
+  }
+
+  Future<void> getFeedBody() async {
+    addEvent(
+        BookMarkedPostsEvent(state: BookMarkedPostsProviderState.isloading));
+
+    try {
+      PostQueryResponse response = await _api.getBookmarkedPost(
+        userId: Provider.of<AuthenticationProvider>(rootContext, listen: false)
+            .currentUser!
+            .id!,
+      );
+      currentData = response.posts;
+      nextPostPage = response.next;
+      if (response == null) {
+        addEvent(
+            BookMarkedPostsEvent(state: BookMarkedPostsProviderState.error));
+        return;
+      }
+
+      addEvent(
+          BookMarkedPostsEvent(state: BookMarkedPostsProviderState.success));
+    } on NetworkError catch (netErr) {
+      addEvent(BookMarkedPostsEvent(state: BookMarkedPostsProviderState.error));
       Dialogs.errorDialog(rootContext, netErr.error);
     }
   }
 
   bookmarkPost(BuildContext context, String id) async {
-    addEvent(MyPostEvent(state: MyPostEventState.isloading));
+    addEvent(
+        BookMarkedPostsEvent(state: BookMarkedPostsProviderState.isloading));
 
     try {
       await _api.bookmarkPost(
@@ -79,49 +109,29 @@ class MyPostsProvider extends BaseProvider<MyPostEvent> {
         postId: id,
       );
       Navigator.of(context).pop();
-      addEvent(MyPostEvent(state: MyPostEventState.success));
+      addEvent(
+          BookMarkedPostsEvent(state: BookMarkedPostsProviderState.success));
     } on NetworkError catch (netErr) {
       Navigator.of(context).pop();
-      addEvent(MyPostEvent(state: MyPostEventState.error));
-      Dialogs.errorDialog(rootContext, netErr.error);
-    }
-  }
-
-  Future<void> getFeedBody() async {
-    addEvent(MyPostEvent(state: MyPostEventState.isloading));
-
-    try {
-      PostQueryResponse response = await _api.getMyPosts(
-        userId: Provider.of<AuthenticationProvider>(rootContext, listen: false)
-            .currentUser!
-            .id!,
-      );
-      currentData = response.posts;
-      nextPostPage = response.next;
-      if (response == null) {
-        addEvent(MyPostEvent(state: MyPostEventState.error));
-        return;
-      }
-
-      addEvent(MyPostEvent(state: MyPostEventState.success));
-    } on NetworkError catch (netErr) {
-      addEvent(MyPostEvent(state: MyPostEventState.error));
+      addEvent(BookMarkedPostsEvent(state: BookMarkedPostsProviderState.error));
       Dialogs.errorDialog(rootContext, netErr.error);
     }
   }
 
   deletePost(String postId, BuildContext context) async {
-    addEvent(MyPostEvent(state: MyPostEventState.isloading));
+    addEvent(
+        BookMarkedPostsEvent(state: BookMarkedPostsProviderState.isloading));
 
     try {
       var response = await _api.deletePost(postId);
 
       Navigator.of(context).pop();
       currentData?.removeWhere((element) => element?.id == postId);
-      addEvent(MyPostEvent(state: MyPostEventState.success));
+      addEvent(
+          BookMarkedPostsEvent(state: BookMarkedPostsProviderState.success));
     } on NetworkError catch (err) {
       Navigator.of(context).pop();
-      addEvent(MyPostEvent(state: MyPostEventState.error));
+      addEvent(BookMarkedPostsEvent(state: BookMarkedPostsProviderState.error));
       Dialogs.errorDialog(context, err.error);
     }
   }

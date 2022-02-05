@@ -4,8 +4,10 @@ import 'package:go_find_me/core/network/networkError.dart';
 import 'package:go_find_me/locator.dart';
 import 'package:go_find_me/models/PostModel.dart';
 import 'package:go_find_me/models/PostQueryResponse.dart';
+import 'package:go_find_me/modules/auth/authProvider.dart';
 import 'package:go_find_me/modules/base_provider.dart';
 import 'package:go_find_me/services/api.dart';
+import 'package:provider/provider.dart';
 
 enum DashBoardEventState { idel, isloading, error, success }
 
@@ -80,6 +82,25 @@ class DashboardProvider extends BaseProvider<DashBoardEvent> {
     }
   }
 
+  bookmarkPost(BuildContext context, String id) async {
+    addEvent(DashBoardEvent(state: DashBoardEventState.isloading));
+
+    try {
+      await _api.bookmarkPost(
+        userId: Provider.of<AuthenticationProvider>(rootContext, listen: false)
+            .currentUser!
+            .id!,
+        postId: id,
+      );
+      Navigator.of(context).pop();
+      addEvent(DashBoardEvent(state: DashBoardEventState.success));
+    } on NetworkError catch (netErr) {
+      Navigator.of(context).pop();
+      addEvent(DashBoardEvent(state: DashBoardEventState.error));
+      Dialogs.errorDialog(rootContext, netErr.error);
+    }
+  }
+
   deletePost(String postId, BuildContext context) async {
     addEvent(DashBoardEvent(state: DashBoardEventState.isloading));
 
@@ -90,9 +111,9 @@ class DashboardProvider extends BaseProvider<DashBoardEvent> {
       currentData?.removeWhere((element) => element?.id == postId);
       addEvent(DashBoardEvent(state: DashBoardEventState.success));
     } on NetworkError catch (err) {
+      Navigator.of(context).pop();
       addEvent(DashBoardEvent(state: DashBoardEventState.error));
       Dialogs.errorDialog(context, err.error);
-      Navigator.of(context).pop();
     }
   }
 }

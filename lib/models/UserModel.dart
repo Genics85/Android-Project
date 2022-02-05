@@ -8,6 +8,7 @@ class UserModel {
     this.username,
     this.confirmedAt,
     this.phoneNumber,
+    this.bookmarked_posts,
   });
 
   String? username;
@@ -16,7 +17,8 @@ class UserModel {
   String? photoUrl;
   String? phoneNumber;
   DateTime? confirmedAt;
-
+  List<String>?
+ bookmarked_posts;
   factory UserModel.fromRawJson(String str) =>
       UserModel.fromJson(json.decode(str));
 
@@ -30,7 +32,9 @@ class UserModel {
       id: json["id"],
       confirmedAt: json["confirmed_at"] == null
           ? null
-          : DateTime.parse(json["confirmed_at"]));
+          : DateTime.parse(json["confirmed_at"]),
+          bookmarked_posts:json["bookmarked_posts"],
+          );
 
   Map<String, dynamic> toJson() => {
         "email": email,
@@ -39,5 +43,6 @@ class UserModel {
         "username": username,
         "phone_number": phoneNumber,
         "confirmed_at": confirmedAt?.toIso8601String(),
+        "bookmarked_posts":bookmarked_posts,
       };
 }

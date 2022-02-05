@@ -23,7 +23,7 @@ class Contribution extends StatefulWidget {
 }
 
 class _ContributionState extends State<Contribution> {
-  final _contributionsProvider = ContributionsProvider();
+  ContributionsProvider _contributionsProvider = ContributionsProvider();
 
   @override
   void initState() {
@@ -34,6 +34,7 @@ class _ContributionState extends State<Contribution> {
           Dialogs.errorDialog(context, event.data);
           break;
         case ContribuionEventState.success:
+          print("hello");
           Navigator.pop(context, OnPopModel(reloadPrev: true));
           break;
         default:
@@ -44,7 +45,7 @@ class _ContributionState extends State<Contribution> {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<ContributionsProvider>(
-      create: (context) => ContributionsProvider(),
+      create: (context) => _contributionsProvider,
       child: Scaffold(
         appBar: AppBar(
           title: Text("Contribute"),

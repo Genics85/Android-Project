@@ -27,8 +27,10 @@ class PostCard extends StatefulWidget {
     required this.callBack,
     required this.deletePost,
     required this.onBookmarkPost,
+    required this.isBookmarked,
   }) : super(key: key);
 
+  final bool isBookmarked;
   final Post post;
   final Future<void> Function() callBack;
   final Future<void> Function() deletePost;
@@ -88,6 +90,7 @@ class _PostCardState extends State<PostCard> {
                               style: ThemeTexTStyle.headerPrim,
                             ),
                             content: PostOptionsDialog(
+                              isBookmarked: widget.isBookmarked,
                               isOwner: widget.post.userId ==
                                   Provider.of<AuthenticationProvider>(context)
                                       .currentUser
@@ -335,7 +338,10 @@ class PostOptionsDialog extends StatefulWidget {
     required this.deletePost,
     required this.isOwner,
     required this.onBookmarkPost,
+    required this.isBookmarked,
   }) : super(key: key);
+
+  final bool isBookmarked;
   final Post post;
   final Future<void> Function() deletePost;
   final bool isOwner;
@@ -420,7 +426,8 @@ class _PostOptionsDialogState extends State<PostOptionsDialog> {
                 ),
               ),
               ListTile(
-                title: Text("Bookmark Post"),
+                title: Text(
+                    widget.isBookmarked ? "Unbookmark Post" : "Bookmark Post"),
                 onTap: () async {
                   setState(() {
                     isLoading = true;

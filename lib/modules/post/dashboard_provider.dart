@@ -86,12 +86,25 @@ class DashboardProvider extends BaseProvider<DashBoardEvent> {
     addEvent(DashBoardEvent(state: DashBoardEventState.isloading));
 
     try {
-      await _api.bookmarkPost(
-        userId: Provider.of<AuthenticationProvider>(rootContext, listen: false)
-            .currentUser!
-            .id!,
-        postId: id,
-      );
+      if (Provider.of<AuthenticationProvider>(rootContext, listen: false)
+          .currentUser!
+          .bookmarked_posts!
+          .contains(id))
+        await _api.unBookmarkPost(
+          userId:
+              Provider.of<AuthenticationProvider>(rootContext, listen: false)
+                  .currentUser!
+                  .id!,
+          postId: id,
+        );
+      else
+        await _api.bookmarkPost(
+          userId:
+              Provider.of<AuthenticationProvider>(rootContext, listen: false)
+                  .currentUser!
+                  .id!,
+          postId: id,
+        );
       Navigator.of(context).pop();
       addEvent(DashBoardEvent(state: DashBoardEventState.success));
     } on NetworkError catch (netErr) {

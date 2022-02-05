@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:go_find_me/components/buttons.dart';
 import 'package:go_find_me/components/post_component.dart';
 import 'package:go_find_me/components/text_fields.dart';
+import 'package:go_find_me/modules/auth/authProvider.dart';
 // import 'package:go_find_me/modules/post/dashboard_provider.dart';
 import 'package:go_find_me/modules/post/my_posts-provider.dart';
 import 'package:go_find_me/themes/textStyle.dart';
@@ -116,6 +117,15 @@ class _MyPostsPageState extends State<MyPostsPage> {
                                                     ),
                                                   );
                                                 return PostCard(
+                                                  isBookmarked: Provider.of<
+                                                              AuthenticationProvider>(
+                                                          context,
+                                                          listen: false)
+                                                      .currentUser!
+                                                      .bookmarked_posts!
+                                                      .contains(myPostProv
+                                                          .currentData![index]!
+                                                          .id!),
                                                   onBookmarkPost: () async {
                                                     myPostProv.bookmarkPost(
                                                       context,

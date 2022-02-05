@@ -72,12 +72,25 @@ class MyPostsProvider extends BaseProvider<MyPostEvent> {
     addEvent(MyPostEvent(state: MyPostEventState.isloading));
 
     try {
-      await _api.bookmarkPost(
-        userId: Provider.of<AuthenticationProvider>(rootContext, listen: false)
-            .currentUser!
-            .id!,
-        postId: id,
-      );
+      if (Provider.of<AuthenticationProvider>(rootContext, listen: false)
+          .currentUser!
+          .bookmarked_posts!
+          .contains(id))
+        await _api.unBookmarkPost(
+          userId:
+              Provider.of<AuthenticationProvider>(rootContext, listen: false)
+                  .currentUser!
+                  .id!,
+          postId: id,
+        );
+      else
+        await _api.bookmarkPost(
+          userId:
+              Provider.of<AuthenticationProvider>(rootContext, listen: false)
+                  .currentUser!
+                  .id!,
+          postId: id,
+        );
       Navigator.of(context).pop();
       addEvent(MyPostEvent(state: MyPostEventState.success));
     } on NetworkError catch (netErr) {

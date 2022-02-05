@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:go_find_me/components/buttons.dart';
 import 'package:go_find_me/components/post_component.dart';
 import 'package:go_find_me/components/text_fields.dart';
+import 'package:go_find_me/modules/auth/authProvider.dart';
 import 'package:go_find_me/modules/post/contributed_posts_provider.dart';
 // import 'package:go_find_me/modules/post/dashboard_provider.dart';
 import 'package:go_find_me/modules/post/my_posts-provider.dart';
@@ -133,6 +134,17 @@ class _EngagedPostsState extends State<EngagedPosts> {
                                                         ),
                                                       );
                                                     return PostCard(
+                                                      isBookmarked: Provider.of<
+                                                                  AuthenticationProvider>(
+                                                              context,
+                                                              listen: false)
+                                                          .currentUser!
+                                                          .bookmarked_posts!
+                                                          .contains(
+                                                              contributedPostsProv
+                                                                  .currentData![
+                                                                      index]!
+                                                                  .id!),
                                                       onBookmarkPost: () async {
                                                         contributedPostsProv
                                                             .bookmarkPost(

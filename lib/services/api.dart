@@ -319,7 +319,7 @@ class Api {
     }
   }
 
-    Future<PostQueryResponse> getBookmarkedPost(
+  Future<PostQueryResponse> getBookmarkedPost(
       {required String userId, String? url}) async {
     try {
       Response<Map<String, dynamic>> response =
@@ -335,13 +335,21 @@ class Api {
     }
   }
 
-  Future<void> bookmarkPost({required String userId,required String postId})async{
-try {
-      Response<Map<String, dynamic>> response =
-          await dio.post( "/post/bookmark_post/$userId",data:{"postId":postId});
+  Future<void> bookmarkPost(
+      {required String userId, required String postId}) async {
+    try {
+      Response<Map<String, dynamic>> response = await dio
+          .post("/post/bookmark_post/$userId", data: {"postId": postId});
+    } on DioError catch (err) {
+      throw NetworkError(err);
+    }
+  }
 
-     
-     
+  Future<void> unBookmarkPost(
+      {required String userId, required String postId}) async {
+    try {
+      Response<Map<String, dynamic>> response = await dio
+          .post("/post/unbookmark_post/$userId", data: {"postId": postId});
     } on DioError catch (err) {
       throw NetworkError(err);
     }

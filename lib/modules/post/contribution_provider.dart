@@ -50,6 +50,9 @@ class ContributionsProvider extends BaseProvider<ContributionsEvent> {
       var response = await _api.contribution({
         "location_sighted": locationController.text,
         "post_id": postId,
+        "user_id": Provider.of<AuthenticationProvider>(context, listen: false)
+            .currentUser!
+            .id!,
         "time_sighted": timeValue!.toIso8601String(),
         "date_sighted": (dateValue ?? DateTime.now()).toIso8601String(),
       });

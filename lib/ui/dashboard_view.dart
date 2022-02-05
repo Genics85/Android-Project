@@ -215,6 +215,14 @@ class _DashboardViewState extends State<DashboardView> {
                                         ),
                                       );
                                     return PostCard(
+                                      isBookmarked:
+                                          Provider.of<AuthenticationProvider>(
+                                                  context,
+                                                  listen: false)
+                                              .currentUser!
+                                              .bookmarked_posts!
+                                              .contains(dashboardProv
+                                                  .currentData![index]!.id!),
                                       onBookmarkPost: () async {
                                         dashboardProv.bookmarkPost(
                                           context,

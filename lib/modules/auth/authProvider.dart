@@ -44,6 +44,13 @@ class AuthenticationProvider extends BaseProvider<AuthEvent> {
 
   bool isPhoneLogin = false;
 
+  Future<void> addCurrentUser(UserModel user) async {
+    currentUser = user;
+    await _sharedPref.addStringToSF("currentUser", json.encode(user.toJson()));
+
+    notifyListeners();
+  }
+
   setLoginPhoneNumber(PhoneNumber phone) {
     loginPhoneNumber = phone;
   }
@@ -110,9 +117,7 @@ class AuthenticationProvider extends BaseProvider<AuthEvent> {
         print("hello");
         print(result!.toJson());
         if (result != null) {
-          currentUser = result;
-          await _sharedPref.addStringToSF(
-              "currentUser", json.encode(result.toJson()));
+          addCurrentUser(result);
           addEvent(AuthEvent(state: AuthEventState.success));
 
           if (currentUser!.confirmedAt != null) {
@@ -143,9 +148,7 @@ class AuthenticationProvider extends BaseProvider<AuthEvent> {
         "password": loginPassworrd.text,
       });
       if (result != null) {
-        currentUser = result;
-        await _sharedPref.addStringToSF(
-            "currentUser", json.encode(result.toJson()));
+        addCurrentUser(result);
         addEvent(AuthEvent(state: AuthEventState.success));
 
         Navigator.pushReplacement(
@@ -172,9 +175,7 @@ class AuthenticationProvider extends BaseProvider<AuthEvent> {
       });
 
       if (result != null) {
-        currentUser = result;
-        await _sharedPref.addStringToSF(
-            "currentUser", json.encode(result.toJson()));
+        addCurrentUser(result);
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(

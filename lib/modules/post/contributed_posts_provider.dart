@@ -4,6 +4,7 @@ import 'package:go_find_me/core/network/networkError.dart';
 import 'package:go_find_me/locator.dart';
 import 'package:go_find_me/models/PostModel.dart';
 import 'package:go_find_me/models/PostQueryResponse.dart';
+import 'package:go_find_me/models/UserModel.dart';
 import 'package:go_find_me/modules/auth/authProvider.dart';
 import 'package:go_find_me/modules/base_provider.dart';
 import 'package:go_find_me/services/api.dart';
@@ -42,22 +43,28 @@ class ContributedPostsProvider extends BaseProvider<ContributedPostEvent> {
       if (Provider.of<AuthenticationProvider>(rootContext, listen: false)
           .currentUser!
           .bookmarked_posts!
-          .contains(id))
-        await _api.unBookmarkPost(
+          .contains(id)) {
+        final UserModel user = await _api.unBookmarkPost(
           userId:
               Provider.of<AuthenticationProvider>(rootContext, listen: false)
                   .currentUser!
                   .id!,
           postId: id,
         );
-      else
-        await _api.bookmarkPost(
+        Provider.of<AuthenticationProvider>(context, listen: false)
+            .addCurrentUser(user);
+      } else {
+        final UserModel user = await _api.bookmarkPost(
           userId:
               Provider.of<AuthenticationProvider>(rootContext, listen: false)
                   .currentUser!
                   .id!,
           postId: id,
         );
+
+        Provider.of<AuthenticationProvider>(context, listen: false)
+            .addCurrentUser(user);
+      }
       Navigator.of(context).pop();
       addEvent(ContributedPostEvent(state: ContributedPostsState.success));
     } on NetworkError catch (netErr) {

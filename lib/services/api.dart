@@ -335,21 +335,24 @@ class Api {
     }
   }
 
-  Future<void> bookmarkPost(
+  Future<UserModel> bookmarkPost(
       {required String userId, required String postId}) async {
     try {
       Response<Map<String, dynamic>> response = await dio
           .post("/post/bookmark_post/$userId", data: {"postId": postId});
+      return UserModel.fromJson(response.data?["user"]);
     } on DioError catch (err) {
       throw NetworkError(err);
     }
   }
 
-  Future<void> unBookmarkPost(
+  Future<UserModel> unBookmarkPost(
       {required String userId, required String postId}) async {
     try {
       Response<Map<String, dynamic>> response = await dio
           .post("/post/unbookmark_post/$userId", data: {"postId": postId});
+
+      return UserModel.fromJson(response.data?["user"]);
     } on DioError catch (err) {
       throw NetworkError(err);
     }

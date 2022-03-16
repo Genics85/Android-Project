@@ -134,6 +134,13 @@ class _BookMarkedPostsState extends State<BookMarkedPostsPage> {
                                                         ),
                                                       );
                                                     return PostCard(
+                                                      onShare: () async {
+                                                        // await bookmarkedPostProv
+                                                        //     .sharePost(
+                                                        //         bookmarkedPostProv
+                                                        //                 .currentData![
+                                                        //             index]);
+                                                      },
                                                       isBookmarked: Provider.of<
                                                                   AuthenticationProvider>(
                                                               context,

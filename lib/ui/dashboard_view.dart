@@ -215,6 +215,11 @@ class _DashboardViewState extends State<DashboardView> {
                                         ),
                                       );
                                     return PostCard(
+                                      onShare: () async {
+                                        await dashboardProv.sharePost(
+                                            dashboardProv
+                                                .currentData![index]!.id!);
+                                      },
                                       isBookmarked:
                                           Provider.of<AuthenticationProvider>(
                                                   context,

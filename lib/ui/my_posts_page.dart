@@ -117,6 +117,13 @@ class _MyPostsPageState extends State<MyPostsPage> {
                                                     ),
                                                   );
                                                 return PostCard(
+                                                  onShare: () async {
+                                                    // await myPostProv
+                                                    //     .sharePost(
+                                                    //         myPostProv
+                                                    //                 .currentData![
+                                                    //             index]);
+                                                  },
                                                   isBookmarked: Provider.of<
                                                               AuthenticationProvider>(
                                                           context,

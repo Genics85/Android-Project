@@ -3,9 +3,11 @@ import 'dart:ui';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:go_find_me/components/buttons.dart';
+import 'package:go_find_me/locator.dart';
 import 'package:go_find_me/models/OnPopModel.dart';
 import 'package:go_find_me/models/PostModel.dart';
 import 'package:go_find_me/modules/auth/authProvider.dart';
+import 'package:go_find_me/services/sharing_service.dart';
 import 'package:go_find_me/themes/borderRadius.dart';
 import 'package:go_find_me/themes/dropShadows.dart';
 import 'package:go_find_me/themes/padding.dart';
@@ -28,6 +30,7 @@ class PostCard extends StatefulWidget {
     required this.deletePost,
     required this.onBookmarkPost,
     required this.isBookmarked,
+    required this.onShare,
   }) : super(key: key);
 
   final bool isBookmarked;
@@ -35,6 +38,7 @@ class PostCard extends StatefulWidget {
   final Future<void> Function() callBack;
   final Future<void> Function() deletePost;
   final Future<void> Function() onBookmarkPost;
+  final Future<void> Function() onShare;
 
   @override
   State<PostCard> createState() => _PostCardState();
@@ -42,14 +46,25 @@ class PostCard extends StatefulWidget {
 
 class _PostCardState extends State<PostCard> {
   bool descContainerSize = false;
+  SharingService sharing = sl<SharingService>();
 
   Future<void> _share({required String text, required String imageLink}) async {
+    showDialog(
+        context: context,
+        builder: (context) => Container(
+              child: Center(
+                child: CircularProgressIndicator(),
+              ),
+            ));
+
+    String url = await sharing.generateShareLink(widget.post.id!);
+    print(url);
+    Navigator.pop(context);
     var response =
         await get(Uri.parse("https://go-find-me.herokuapp.com/$imageLink"));
     await WcFlutterShare.share(
       sharePopupTitle: "GoFindMe",
-      text: """$text      
-      $text""",
+      text: "$text\n$url",
       bytesOfFile: response.bodyBytes,
       fileName: "Missing.png",
       mimeType: 'image/png',
@@ -217,28 +232,14 @@ class _PostCardState extends State<PostCard> {
                           )
                         ],
                       ),
-                      InkWell(
-                        onTap: () async {
+                      IconButton(
+                        icon: Icon(Icons.share),
+                        // onPressed: widget.onShare,
+                        onPressed: () async {
                           await _share(
                               text: widget.post.desc!,
                               imageLink: widget.post.imgs![0]);
                         },
-                        child: Row(
-                          children: [
-                            Icon(
-                              Icons.share,
-                              color: ThemeColors.grey,
-                            ),
-                            SizedBox(
-                              width: ThemePadding.padBase / 2,
-                            ),
-                            Text(
-                              "${widget.post.shares!}",
-                              style: ThemeTexTStyle.regular(
-                                  color: ThemeColors.grey),
-                            )
-                          ],
-                        ),
                       ),
                       InkWell(
                         onTap: () {
@@ -273,28 +274,14 @@ class _PostCardState extends State<PostCard> {
                           )
                         ],
                       ),
-                      InkWell(
-                        onTap: () async {
+                      IconButton(
+                        icon: Icon(Icons.share),
+                        // onPressed: widget.onShare,
+                        onPressed: () async {
                           await _share(
                               text: widget.post.desc!,
                               imageLink: widget.post.imgs![0]);
                         },
-                        child: Row(
-                          children: [
-                            Icon(
-                              Icons.share,
-                              color: ThemeColors.grey,
-                            ),
-                            SizedBox(
-                              width: ThemePadding.padBase / 2,
-                            ),
-                            Text(
-                              "${widget.post.shares!}",
-                              style: ThemeTexTStyle.regular(
-                                  color: ThemeColors.grey),
-                            )
-                          ],
-                        ),
                       ),
                       InkWell(
                         onTap: () async {

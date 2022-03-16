@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/material.dart';
 import 'package:go_find_me/ui/welcome_page.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
@@ -24,7 +25,7 @@ class AuthEvent<T> {
 
 class AuthenticationProvider extends BaseProvider<AuthEvent> {
   UserModel? currentUser;
-
+  PendingDynamicLinkData? dynamicLinkData;
   Api _api = sl<Api>();
   SharedPreferencesService _sharedPref = sl<SharedPreferencesService>();
 
@@ -72,6 +73,10 @@ class AuthenticationProvider extends BaseProvider<AuthEvent> {
     notifyListeners();
   }
 
+  void setPendingDynamicLink(PendingDynamicLinkData? dynamicLinkData) {
+    this.dynamicLinkData = dynamicLinkData;
+  }
+
   getStoredUser(BuildContext context, {bool? firstTime}) async {
     if (firstTime ?? false) {
       Navigator.pushReplacement(
@@ -106,7 +111,9 @@ class AuthenticationProvider extends BaseProvider<AuthEvent> {
         context, MaterialPageRoute(builder: (context) => Login()));
   }
 
-  emailLogin(BuildContext context) async {
+  emailLogin(
+    BuildContext context,
+  ) async {
     if (loginEmailFormKey.currentState!.validate()) {
       addEvent(AuthEvent(state: AuthEventState.loading));
       try {
@@ -139,7 +146,9 @@ class AuthenticationProvider extends BaseProvider<AuthEvent> {
     }
   }
 
-  phoneLogin(BuildContext context) async {
+  phoneLogin(
+    BuildContext context,
+  ) async {
     print(loginPhoneNumber!.phoneNumber);
     addEvent(AuthEvent(state: AuthEventState.loading));
     try {

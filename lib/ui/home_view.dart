@@ -1,10 +1,13 @@
+import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/material.dart';
 import 'package:go_find_me/locator.dart';
+import 'package:go_find_me/models/PostModel.dart';
 import 'package:go_find_me/modules/auth/authProvider.dart';
 import 'package:go_find_me/themes/theme_colors.dart';
 import 'package:go_find_me/ui/create_post.dart';
 import 'package:go_find_me/ui/dashboard_view.dart';
 import 'package:go_find_me/ui/profile_view.dart';
+import 'package:go_find_me/ui/single_post_page.dart';
 import 'package:provider/provider.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 
@@ -21,8 +24,22 @@ class _HomeViewState extends State<HomeView> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
+    WidgetsBinding.instance!.addPostFrameCallback((_) async {
       _initNotification();
+      PendingDynamicLinkData? dynamicLinkData =
+          Provider.of<AuthenticationProvider>(context, listen: false)
+              .dynamicLinkData;
+      if (dynamicLinkData != null) {
+        final Uri uri = dynamicLinkData.link;
+        if (uri.path == "/post")
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) =>
+                  SinglePostPage(postId: uri.queryParameters["id"] ?? ""),
+            ),
+          );
+      }
     });
   }
 
@@ -36,7 +53,6 @@ class _HomeViewState extends State<HomeView> {
   }
 
   _initNotification() {
-    OneSignal.shared.setAppId("d03e5a6b-6f44-4784-9a1b-5c12d791ef3f");
     OneSignal.shared.setExternalUserId(
         Provider.of<AuthenticationProvider>(context, listen: false)
             .currentUser!

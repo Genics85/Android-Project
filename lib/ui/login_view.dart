@@ -1,3 +1,4 @@
+import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/material.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:go_find_me/components/passwordTextField.dart';
@@ -15,7 +16,9 @@ import 'package:go_find_me/ui/signup_view.dart';
 import 'package:provider/provider.dart';
 
 class Login extends StatefulWidget {
-  Login({Key? key}) : super(key: key);
+  Login({
+    Key? key,
+  }) : super(key: key);
 
   @override
   _LoginState createState() => _LoginState();

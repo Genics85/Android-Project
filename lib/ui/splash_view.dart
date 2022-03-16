@@ -1,13 +1,18 @@
+import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/material.dart';
 import 'package:go_find_me/locator.dart';
 import 'package:go_find_me/modules/auth/authProvider.dart';
 import 'package:go_find_me/services/sharedPref.dart';
 import 'package:go_find_me/themes/theme_colors.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
 
 class SplashScreen extends StatefulWidget {
-  const SplashScreen({Key? key, required this.firstTime}) : super(key: key);
+  const SplashScreen(
+      {Key? key, required this.firstTime, required this.dynamicLinkData})
+      : super(key: key);
   final bool firstTime;
+  final PendingDynamicLinkData? dynamicLinkData;
 
   @override
   _SplashScreenState createState() => _SplashScreenState();
@@ -20,7 +25,11 @@ class _SplashScreenState extends State<SplashScreen> {
 
     Future.delayed(Duration(milliseconds: 1500), () {
       Provider.of<AuthenticationProvider>(context, listen: false)
-          .getStoredUser(context, firstTime: widget.firstTime);
+          .setPendingDynamicLink(widget.dynamicLinkData);
+      Provider.of<AuthenticationProvider>(context, listen: false).getStoredUser(
+        context,
+        firstTime: widget.firstTime,
+      );
     });
   }
 

@@ -369,4 +369,16 @@ class Api {
       throw NetworkError(err);
     }
   }
+
+  Future<String> getShareLink(Map<String, dynamic> map) async {
+    try {
+      final Response response = await dio.post(
+          "https://firebasedynamiclinks.googleapis.com/v1/shortLinks?key=AAAAwU_zcfI:APA91bFQz4niUX4pwi47jAMhqf_0KB_OMc23NPrb6-izpIZAlhhqI8kaTs05YDMU1UIOAJl4b_3gCigR_BJJyyOMQnYzSfpbpQlhK8tJcicUewxCtHFGpQxDcSLUq1nnQKFIGMH87bZg");
+      print(response.data);
+      return "";
+    } on DioError catch (err) {
+      print("ee");
+      throw NetworkError(err);
+    }
+  }
 }

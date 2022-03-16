@@ -134,6 +134,13 @@ class _EngagedPostsState extends State<EngagedPosts> {
                                                         ),
                                                       );
                                                     return PostCard(
+                                                      onShare: () async {
+                                                        // await contributedPostsProv
+                                                        //     .sharePost(
+                                                        //         contributedPostsProv
+                                                        //                 .currentData![
+                                                        //             index]);
+                                                      },
                                                       isBookmarked: Provider.of<
                                                                   AuthenticationProvider>(
                                                               context,

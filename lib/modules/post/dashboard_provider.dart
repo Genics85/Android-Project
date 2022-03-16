@@ -8,6 +8,7 @@ import 'package:go_find_me/models/UserModel.dart';
 import 'package:go_find_me/modules/auth/authProvider.dart';
 import 'package:go_find_me/modules/base_provider.dart';
 import 'package:go_find_me/services/api.dart';
+import 'package:go_find_me/services/sharing_service.dart';
 import 'package:provider/provider.dart';
 
 enum DashBoardEventState { idel, isloading, error, success }
@@ -23,6 +24,7 @@ class DashboardProvider extends BaseProvider<DashBoardEvent> {
   BuildContext rootContext;
   bool confirmDelete = false;
   Api _api = sl<Api>();
+  SharingService sharingService = sl<SharingService>();
   bool reload = false;
   List<Post?>? currentData;
   String? nextPostPage;
@@ -134,6 +136,16 @@ class DashboardProvider extends BaseProvider<DashBoardEvent> {
       Navigator.of(context).pop();
       addEvent(DashBoardEvent(state: DashBoardEventState.error));
       Dialogs.errorDialog(context, err.error);
+    }
+  }
+
+  sharePost(String postId) async {
+    addEvent(DashBoardEvent(state: DashBoardEventState.isloading));
+    try {
+      await sharingService.generateShareLink(postId);
+      addEvent(DashBoardEvent(state: DashBoardEventState.success));
+    } on NetworkError catch (e) {
+      addEvent(DashBoardEvent(state: DashBoardEventState.error, data: e.error));
     }
   }
 }
